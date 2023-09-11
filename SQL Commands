@@ -1,0 +1,226 @@
+SELECT country,
+       COUNT(DISTINCT D.customer_id) AS total_customers,
+       SUM(amount) AS total_revenue
+FROM country A
+INNER JOIN city B ON A.country_id = B.country_id
+INNER JOIN address C ON B.city_id = C.city_id
+INNER JOIN customer D ON C.address_ID = D.address_ID
+INNER JOIN payment E ON D.customer_id = E.customer_id
+GROUP BY country
+ORDER BY total_revenue DESC
+
+SELECT
+	A.country,
+	COUNT(DISTINCT D.customer_id) AS customer_total,
+	COUNT(top_5_customer) AS top5
+FROM country A
+	INNER JOIN city B ON A.country_id = B.country_id
+	INNER JOIN address C ON B.city_id = C.city_id
+	INNER JOIN customer D ON C.address_id = D.address_id
+LEFT JOIN
+(SELECT D.customer_id, D.first_name, D.last_name, A.country,
+       SUM(amount) AS total_revenue
+FROM country A
+INNER JOIN city B ON A.country_id = B.country_id
+INNER JOIN address C ON B.city_id = C.city_id
+INNER JOIN customer D ON C.address_ID = D.address_ID
+INNER JOIN payment E ON D.customer_id = E.customer_id
+GROUP BY country, D.customer_id
+ORDER BY total_revenue DESC
+LIMIT 5) AS top_5_customer
+ON D.customer_id = top_5_customer.customer_id 
+GROUP BY A.country, top_5_customer.customer_id
+HAVING COUNT (top_5_custmer) > 0
+
+Descriptive stats
+FILM – 1000 total
+RELEASE YEAR – 2006
+
+LANGUAGE – English 
+
+RENTAL DURATION –
+SELECT 
+MIN(rental_duration),
+MAX(rental_duration),
+AVG(rental_duration),
+MODE() WITHIN GROUP(ORDER BY length)
+FROM film
+RENTAL RATE-
+SELECT 
+MIN(rental_rate),
+MAX(rental_rate),
+AVG(rental_rate),
+MODE() WITHIN GROUP(ORDER BY rental_rate)
+FROM film
+LENGTH –
+SELECT 
+MIN(length),
+MAX(length),
+AVG(length),
+MODE() WITHIN GROUP(ORDER BY length)
+FROM film
+REPLACEMENT COST – 
+SELECT 
+MIN(replacement_cost),
+MAX(replacement_cost),
+AVG(replacement_cost),
+MODE() WITHIN GROUP(ORDER BY replacement_cost)
+FROM film
+
+RATING –
+SELECT rating,
+	COUNT(rating)
+FROM film
+GROUP BY rating
+
+LAST UPDATE – "2013-05-26 14:50:58.951"
+SELECT last_update,
+COUNT(last_update)
+FROM film
+GROUP BY last_update
+ORDER BY last_update
+
+SPCL FT – multiple
+SELECT special_features,
+	COUNT(special_features) AS spcl_fts_cnt
+FROM film
+GROUP BY special_features
+ORDER BY spcl_fts_cnt --special features count
+DESC
+CATEGORY
+SELECT 
+name,
+A.category_id,
+COUNT(B.category_id)
+FROM category A
+INNER JOIN film_category B ON A.category_id = B.category_id
+GROUP BY name, A.category_id
+ORDER BY A.category_id
+ACTOR
+SELECT 
+A.actor_id,
+first_name,
+last_name,
+COUNT(A.actor_id) AS movies_starred_in
+FROM actor A
+INNER JOIN film_actor B ON A.actor_id = B.actor_id
+INNER JOIN film C ON B.film_id = C.film_id
+GROUP BY A.actor_id
+ORDER BY movies_starred_in DESC
+RENTAL DATE
+SELECT 
+MIN(rental_date),
+MAX(rental_date)
+FROM rental
+
+WITH return_cte AS
+(SELECT
+ rental_id,
+ rental_date,
+ COUNT(return_date) AS returns
+FROM rental
+GROUP BY rental_id, rental_date)
+SELECT 
+rental_id AS unreturned
+FROM return_cte
+WHERE returns = 0
+GROUP BY rental_id, rental_date
+
+
+
+
+
+
+
+
+WITH return_cte AS
+(SELECT
+ rental_id,
+ rental_date,
+ rental_rate,
+ replacement_cost,
+ return_date
+FROM rental A
+ 	INNER JOIN inventory B ON A.inventory_id = B.inventory_id
+ 	INNER JOIN film C ON B.film_id = C.film_id
+GROUP BY rental_id, rental_date, rental_rate, replacement_cost)
+SELECT 
+rental_id AS unreturned,
+rental_date,
+rental_rate,
+replacement_cost
+FROM return_cte
+WHERE return_date IS NULL
+GROUP BY rental_id, rental_date, rental_rate, replacement_cost
+ORDER BY rental_date
+
+SELECT
+	rental_id,
+	rental_date,
+	rental_rate,
+	replacement_cost,
+	return_date
+FROM rental A
+ 	INNER JOIN inventory B ON A.inventory_id = B.inventory_id
+ 	INNER JOIN film C ON B.film_id = C.film_id
+WHERE return_date IS NULL
+GROUP BY rental_id, rental_date, rental_rate, replacement_cost
+ORDER BY rental_date
+
+EMAIL LIST FOR CUSTOMERS WHO OWE
+SELECT
+	email,
+	first_name,
+	title,
+	rental_date,
+	rental_rate,
+	SUM(replacement_cost) AS inventory_owed
+FROM customer A
+ 	INNER JOIN rental B ON A.customer_id = B.customer_id
+	INNER JOIN inventory C ON B.inventory_id = C.inventory_id
+ 	INNER JOIN film D ON C.film_id = D.film_id
+WHERE return_date IS NULL
+GROUP BY email, first_name, title, rental_rate, rental_date, replacement_cost
+ORDER BY rental_rate DESC, inventory_owed DESC
+
+TOP 10 COUNTRIES – 
+SELECT country,
+       COUNT(DISTINCT D.customer_id) AS total_customers
+FROM country A
+INNER JOIN city B ON A.country_id = B.country_id
+INNER JOIN address C ON B.city_id = C.city_id
+INNER JOIN customer D ON C.address_ID = D.address_ID
+GROUP BY country
+ORDER BY total_customers DESC
+LIMIT 10
+
+10 CITIES WITHIN 10 COUNTRIES
+SELECT 
+	country,
+	city,
+	COUNT(DISTINCT D.customer_id) AS city_customers
+FROM country A
+INNER JOIN city B ON A.country_id = B.country_id
+INNER JOIN address C ON B.city_id = C.city_id
+INNER JOIN customer D ON C.address_ID = D.address_ID
+WHERE country IN ('India', 'China', 'United States', 'Japan', 'Mexico', 'Brazil', 'Russian Federation', 'Philippines', 'Turkey', 'Indonesia')
+GROUP BY country, city
+ORDER BY city_customers DESC
+LIMIT 10
+
+TOP 5 CUSTOMERS WITHIN 10 STATES – No point. Only 2 countries with more than 1.
+SELECT
+	country,
+	city,
+	first_name,
+	last_name,
+	SUM(amount) AS revenue,
+	COUNT(DISTINCT E.customer_id) AS city_customers
+FROM country A
+INNER JOIN city B ON A.country_id = B.country_id
+INNER JOIN address C ON B.city_id = C.city_id
+INNER JOIN customer D ON C.address_ID = D.address_ID
+INNER JOIN payment E ON D.customer_id = E.customer_id
+GROUP BY country, city, first_name, last_name
+ORDER BY revenue DESC
+LIMIT 50

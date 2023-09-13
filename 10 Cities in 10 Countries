@@ -1,0 +1,13 @@
+10 CITIES WITHIN 10 COUNTRIES
+SELECT 
+	country,
+	city,
+	COUNT(DISTINCT D.customer_id) AS city_customers
+FROM country A
+INNER JOIN city B ON A.country_id = B.country_id
+INNER JOIN address C ON B.city_id = C.city_id
+INNER JOIN customer D ON C.address_ID = D.address_ID
+WHERE country IN ('India', 'China', 'United States', 'Japan', 'Mexico', 'Brazil', 'Russian Federation', 'Philippines', 'Turkey', 'Indonesia')
+GROUP BY country, city
+ORDER BY city_customers DESC
+LIMIT 10

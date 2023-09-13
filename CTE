@@ -1,0 +1,33 @@
+WITH return_cte AS
+(SELECT
+ rental_id,
+ rental_date,
+ COUNT(return_date) AS returns
+FROM rental
+GROUP BY rental_id, rental_date)
+SELECT 
+rental_id AS unreturned
+FROM return_cte
+WHERE returns = 0
+GROUP BY rental_id, rental_date
+
+WITH return_cte AS
+(SELECT
+ rental_id,
+ rental_date,
+ rental_rate,
+ replacement_cost,
+ return_date
+FROM rental A
+ 	INNER JOIN inventory B ON A.inventory_id = B.inventory_id
+ 	INNER JOIN film C ON B.film_id = C.film_id
+GROUP BY rental_id, rental_date, rental_rate, replacement_cost)
+SELECT 
+rental_id AS unreturned,
+rental_date,
+rental_rate,
+replacement_cost
+FROM return_cte
+WHERE return_date IS NULL
+GROUP BY rental_id, rental_date, rental_rate, replacement_cost
+ORDER BY rental_date

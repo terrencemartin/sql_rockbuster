@@ -1,0 +1,6 @@
+SELECT 
+MIN(rental_rate),
+MAX(rental_rate),
+AVG(rental_rate),
+MODE() WITHIN GROUP(ORDER BY rental_rate)
+FROM film

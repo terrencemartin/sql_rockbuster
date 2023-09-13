@@ -1,3 +1,4 @@
+# TOP COUNTRIES
 SELECT country,
        COUNT(DISTINCT D.customer_id) AS total_customers,
        SUM(amount) AS total_revenue
@@ -9,6 +10,7 @@ INNER JOIN payment E ON D.customer_id = E.customer_id
 GROUP BY country
 ORDER BY total_revenue DESC
 
+#WHERE ARE TOP 5 CUSTOMERS
 SELECT
 	A.country,
 	COUNT(DISTINCT D.customer_id) AS customer_total,
@@ -32,13 +34,7 @@ ON D.customer_id = top_5_customer.customer_id
 GROUP BY A.country, top_5_customer.customer_id
 HAVING COUNT (top_5_custmer) > 0
 
-Descriptive stats
-FILM – 1000 total
-RELEASE YEAR – 2006
-
-LANGUAGE – English 
-
-RENTAL DURATION –
+# RENTAL DURATION –
 SELECT 
 MIN(rental_duration),
 MAX(rental_duration),
@@ -80,7 +76,7 @@ FROM film
 GROUP BY last_update
 ORDER BY last_update
 
-SPCL FT – multiple
+# SPCL FT – MULTIPLE
 SELECT special_features,
 	COUNT(special_features) AS spcl_fts_cnt
 FROM film
@@ -113,6 +109,7 @@ MIN(rental_date),
 MAX(rental_date)
 FROM rental
 
+#CTE
 WITH return_cte AS
 (SELECT
  rental_id,
@@ -126,13 +123,7 @@ FROM return_cte
 WHERE returns = 0
 GROUP BY rental_id, rental_date
 
-
-
-
-
-
-
-
+# CTE
 WITH return_cte AS
 (SELECT
  rental_id,
@@ -154,6 +145,7 @@ WHERE return_date IS NULL
 GROUP BY rental_id, rental_date, rental_rate, replacement_cost
 ORDER BY rental_date
 
+# INNER JOIN
 SELECT
 	rental_id,
 	rental_date,
@@ -167,7 +159,7 @@ WHERE return_date IS NULL
 GROUP BY rental_id, rental_date, rental_rate, replacement_cost
 ORDER BY rental_date
 
-EMAIL LIST FOR CUSTOMERS WHO OWE
+# EMAIL LIST FOR CUSTOMERS WHO OWE
 SELECT
 	email,
 	first_name,
@@ -183,7 +175,7 @@ WHERE return_date IS NULL
 GROUP BY email, first_name, title, rental_rate, rental_date, replacement_cost
 ORDER BY rental_rate DESC, inventory_owed DESC
 
-TOP 10 COUNTRIES – 
+# TOP 10 COUNTRIES – 
 SELECT country,
        COUNT(DISTINCT D.customer_id) AS total_customers
 FROM country A
@@ -194,7 +186,7 @@ GROUP BY country
 ORDER BY total_customers DESC
 LIMIT 10
 
-10 CITIES WITHIN 10 COUNTRIES
+# 10 CITIES WITHIN 10 COUNTRIES
 SELECT 
 	country,
 	city,
@@ -208,7 +200,7 @@ GROUP BY country, city
 ORDER BY city_customers DESC
 LIMIT 10
 
-TOP 5 CUSTOMERS WITHIN 10 STATES – No point. Only 2 countries with more than 1.
+# TOP 5 CUSTOMERS WITHIN 10 STATES – No point. Only 2 countries with more than 1.
 SELECT
 	country,
 	city,

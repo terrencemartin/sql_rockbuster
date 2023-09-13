@@ -1,0 +1,15 @@
+EMAIL LIST FOR CUSTOMERS WHO OWE
+SELECT
+	email,
+	first_name,
+	title,
+	rental_date,
+	rental_rate,
+	SUM(replacement_cost) AS inventory_owed
+FROM customer A
+ 	INNER JOIN rental B ON A.customer_id = B.customer_id
+	INNER JOIN inventory C ON B.inventory_id = C.inventory_id
+ 	INNER JOIN film D ON C.film_id = D.film_id
+WHERE return_date IS NULL
+GROUP BY email, first_name, title, rental_rate, rental_date, replacement_cost
+ORDER BY rental_rate DESC, inventory_owed DESC

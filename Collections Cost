@@ -1,0 +1,12 @@
+SELECT
+	rental_id,
+	rental_date,
+	rental_rate,
+	replacement_cost,
+	return_date
+FROM rental A
+ 	INNER JOIN inventory B ON A.inventory_id = B.inventory_id
+ 	INNER JOIN film C ON B.film_id = C.film_id
+WHERE return_date IS NULL
+GROUP BY rental_id, rental_date, rental_rate, replacement_cost
+ORDER BY rental_date

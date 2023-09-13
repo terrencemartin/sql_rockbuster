@@ -1,0 +1,10 @@
+TOP 10 COUNTRIES – 
+SELECT country,
+       COUNT(DISTINCT D.customer_id) AS total_customers
+FROM country A
+INNER JOIN city B ON A.country_id = B.country_id
+INNER JOIN address C ON B.city_id = C.city_id
+INNER JOIN customer D ON C.address_ID = D.address_ID
+GROUP BY country
+ORDER BY total_customers DESC
+LIMIT 10

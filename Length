@@ -1,0 +1,6 @@
+SELECT 
+MIN(length),
+MAX(length),
+AVG(length),
+MODE() WITHIN GROUP(ORDER BY length)
+FROM film

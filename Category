@@ -1,0 +1,8 @@
+SELECT 
+name,
+A.category_id,
+COUNT(B.category_id)
+FROM category A
+INNER JOIN film_category B ON A.category_id = B.category_id
+GROUP BY name, A.category_id
+ORDER BY A.category_id

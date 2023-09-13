@@ -1,0 +1,22 @@
+SELECT
+	A.country,
+	COUNT(DISTINCT D.customer_id) AS customer_total,
+	COUNT(top_5_customer) AS top5
+FROM country A
+	INNER JOIN city B ON A.country_id = B.country_id
+	INNER JOIN address C ON B.city_id = C.city_id
+	INNER JOIN customer D ON C.address_id = D.address_id
+LEFT JOIN
+(SELECT D.customer_id, D.first_name, D.last_name, A.country,
+       SUM(amount) AS total_revenue
+FROM country A
+INNER JOIN city B ON A.country_id = B.country_id
+INNER JOIN address C ON B.city_id = C.city_id
+INNER JOIN customer D ON C.address_ID = D.address_ID
+INNER JOIN payment E ON D.customer_id = E.customer_id
+GROUP BY country, D.customer_id
+ORDER BY total_revenue DESC
+LIMIT 5) AS top_5_customer
+ON D.customer_id = top_5_customer.customer_id 
+GROUP BY A.country, top_5_customer.customer_id
+HAVING COUNT (top_5_custmer) > 0

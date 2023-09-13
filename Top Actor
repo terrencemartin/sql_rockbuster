@@ -1,0 +1,15 @@
+SELECT 
+A.actor_id,
+first_name,
+last_name,
+COUNT(A.actor_id) AS movies_starred_in
+FROM actor A
+INNER JOIN film_actor B ON A.actor_id = B.actor_id
+INNER JOIN film C ON B.film_id = C.film_id
+GROUP BY A.actor_id
+ORDER BY movies_starred_in DESC
+RENTAL DATE
+SELECT 
+MIN(rental_date),
+MAX(rental_date)
+FROM rental

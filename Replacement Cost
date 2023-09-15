@@ -1,6 +1,0 @@
-SELECT 
-MIN(replacement_cost),
-MAX(replacement_cost),
-AVG(replacement_cost),
-MODE() WITHIN GROUP(ORDER BY replacement_cost)
-FROM film

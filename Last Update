@@ -1,5 +1,0 @@
-SELECT last_update,
-COUNT(last_update)
-FROM film
-GROUP BY last_update
-ORDER BY last_update

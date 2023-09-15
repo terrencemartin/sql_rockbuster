@@ -1,6 +1,0 @@
-SELECT 
-MIN(rental_duration),
-MAX(rental_duration),
-AVG(rental_duration),
-MODE() WITHIN GROUP(ORDER BY length)
-FROM film

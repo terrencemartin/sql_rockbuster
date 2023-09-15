@@ -3,11 +3,3 @@ COUNT(last_update)
 FROM film
 GROUP BY last_update
 ORDER BY last_update
-
-SPCL FT – multiple
-SELECT special_features,
-	COUNT(special_features) AS spcl_fts_cnt
-FROM film
-GROUP BY special_features
-ORDER BY spcl_fts_cnt --special features count
-DESC
